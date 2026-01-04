@@ -1,0 +1,1319 @@
+{
+  "name": "Follow-Up - Volvemos a contactar (Sergi)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -496,
+        -1472
+      ],
+      "id": "6e2dde51-260d-4dbe-8841-98d8eb2d5030",
+      "name": "Schedule Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Stage",
+              "lookupValue": "Contactadas sin respuesta"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        -1472
+      ],
+      "id": "6f59d1d0-380f-4394-8096-638fb41f5449",
+      "name": "Buscamos leads que no contestan",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4be90cba-b5f0-470a-a3a6-d0b0881c8206",
+              "name": "empresa",
+              "value": "={{ $json['Company Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "35c76bf1-b8c8-4adb-96d2-f350361dcdf5",
+              "name": "nombre_director",
+              "value": "={{ $json['Contact Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c6c2404c-86a0-4f15-8529-0e4e5951a2f6",
+              "name": "email",
+              "value": "={{ $json['Contact Email'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3c31807b-2c7c-4cd4-a6b9-627c52696879",
+              "name": "message_id",
+              "value": "={{ $json['Message ID (Email)'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        -1472
+      ],
+      "id": "9acb1d17-79c9-45e4-9506-474a896bf001",
+      "name": "Organizamos variables",
+      "executeOnce": false,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ Obtener hora actual en España correctamente\nconst ahoraEspaña = new Date().toLocaleString(\"en-US\", { timeZone: \"Europe/Madrid\" });\nconst horaEspaña = new Date(ahoraEspaña);\nconst horaActual = horaEspaña.getHours();\nconst saludo = horaActual < 14 ? \"Buenos días\" : \"Buenas tardes\";\n\n// ====== LIMPIAR Y FORMATEAR NOMBRE =======\nlet rawNombre =  $input.first().json.nombre_director || \"\";\nrawNombre = rawNombre.replace(/Don\\s+|Doña\\s+/gi, \"\").trim(); // quitar Don/Doña\nconst primerNombre = rawNombre.split(\" \")[0]; // solo el primer nombre\n\n// ====== LIMPIAR Y FORMATEAR EMPRESA =======\nlet rawEmpresa = $input.first().json.empresa || \"\";\n\n// Eliminar S.L., SL, S.A., SA, etc.\nrawEmpresa = rawEmpresa.replace(/\\bS\\.?L\\.?U?\\.?|\\bS\\.?A\\.?\\b/gi, \"\").trim();\n\n// Convertir a Title Case\nlet empresaFormateada = rawEmpresa\n  .toLowerCase()\n  .split(\" \")\n  .map(p => p.charAt(0).toUpperCase() + p.slice(1))\n  .join(\" \")\n  .replace(/\\.\\s*$/, \"\"); // ❌ Eliminar punto final si lo hay\n\n// Firma\nconst firma = `\n  <br>\n  <p><strong>Juan García</strong><br>\n  Analista - Aquilae Relevo<br>\n  <a href=\"https://aquilaerelevo.com\">aquilaerelevo.com</a><br>\n  +34 633 24 26 78</p>\n  <img src=\"https://drive.google.com/uc?id=1k-rJG3_bkpmUdARsJuMyHzkGscTUA22K\" width=\"150\" />\n`;\n\n// Plantilla corregida\nconst plantilla = `\n<p>${saludo}, ${primerNombre}.</p>\n\n<p>Ruego que disculpes mi insistencia, pero la verdad es que querríamos reafirmar nuestro interés en reunirnos con vosotros y que nos contarais acerca de <strong>${empresaFormateada}</strong> y vuestro proyecto.</p>\n\n<p>Estamos estudiando varias empresas del sector y creemos que os puede resultar interesante la propuesta de <strong>Aquilae Relevo</strong>, al enfocarse de manera diferencial en el empresario y permitirle dar continuidad a su proyecto al mismo tiempo que facilita la capitalización de su esfuerzo.</p>\n\n<p>Estaríamos encantados de reunirnos contigo y <strong>agradeceríamos si nos pudieras indicar un día y hora de tu conveniencia para conocernos o tener una llamada.</strong> Por nuestra parte, tenemos flexibilidad para reunirnos con vosotros.</p>\n\n<p>Gracias de antemano y un cordial saludo,</p>\n\n<br>\n--<br>\n${firma}\n`;\n\nreturn [\n  {\n    json: {\n      emailBody: plantilla,\n      subject: `Seguimiento - Aquilae Relevo`,\n      to: $('Organizamos variables').first().json.email\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        -1488
+      ],
+      "id": "79a9103a-f8c7-4c63-a700-9b8fc0f1db29",
+      "name": "Plantilla Follow-Up",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Organizamos variables').item.json.message_id }}",
+        "message": "={{ $json.emailBody }}",
+        "options": {
+          "ccList": "miguel.cano@aquilaerelevo.com, sergi.vaughan@aquilaerelevo.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1984,
+        -1488
+      ],
+      "id": "b3f00d3c-bde2-48a8-9952-ff3f66eeecf0",
+      "name": "Enviamos correo, contestando al anterior correo",
+      "webhookId": "3a10c931-5438-4c07-bf77-a64d5401292d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SZPnG8wdT4jFlYNR",
+          "name": "Gmail - Aquilae (Sergi - Juan García)"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Stage": "Follow-Up",
+            "row_number": "={{ $('Extraemos los que llevan 2 semanas sin contestar').item.json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Name",
+              "displayName": "Contact Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "EBITDA ('ooo€)",
+              "displayName": "EBITDA ('ooo€)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Revenue",
+              "displayName": "Revenue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CAGR (2019)",
+              "displayName": "CAGR (2019)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner \nage",
+              "displayName": "Owner \nage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Intial \ncheck",
+              "displayName": "Intial \ncheck",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CIF",
+              "displayName": "CIF",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message ID (Email)",
+              "displayName": "Message ID (Email)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last interacted on",
+              "displayName": "Last interacted on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Creation date",
+              "displayName": "Creation date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Probability",
+              "displayName": "Probability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2304,
+        -1472
+      ],
+      "id": "0e173f49-4232-4ea2-a69b-b4abb658ad90",
+      "name": "Actualizamos estado del AUTO_CRM",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        608,
+        -1488
+      ],
+      "id": "a0685d7d-da92-46cf-9ad0-fe73e69e612d",
+      "name": "Loop Over Items",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2560,
+        -1488
+      ],
+      "id": "403ace43-2860-46f4-89fc-987375677002",
+      "name": "Wait",
+      "webhookId": "822f0b3f-7ebe-486a-a67c-160b2d4e943b",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## 2 semanas\n- Configurado cada dia a las 9:00 am"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -608,
+        528
+      ],
+      "typeVersion": 1,
+      "id": "5899111c-c747-47b6-bcca-24e7317a529b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "const hoy = new Date();\nconst dosSemanasAntes = new Date();\ndosSemanasAntes.setDate(hoy.getDate() - 14); // ⬅️ 14 días = 2 semanas\n\nreturn items.filter(item => {\n  const stage = (item.json.Stage || \"\").toLowerCase().trim();\n  const fechaRaw = item.json['Last interacted on'];\n\n  // Verificamos que haya valor en la fecha\n  if (!fechaRaw) return false;\n\n  // Extraer fecha del formato DD/MM/YYYY, HH:mm:ss\n  const [dia, mes, anio] = fechaRaw.split(',')[0].trim().split('/');\n  const fechaUltimoContacto = new Date(`${anio}-${mes}-${dia}`);\n\n  const esSinRespuesta = stage === 'contactadas sin respuesta';\n  const haceMasDe2Semanas = fechaUltimoContacto < dosSemanasAntes;\n\n  return esSinRespuesta && haceMasDe2Semanas;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        -1472
+      ],
+      "id": "e4c3cd0a-7b57-4832-857a-072e9c525213",
+      "name": "Extraemos los que llevan 2 semanas sin contestar",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        -1264
+      ],
+      "id": "5a78ab93-14e8-4ee7-8694-49666c540e8a",
+      "name": "No Operation, do nothing",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 10,
+        "filters": {
+          "q": "=from: {{ $json.email }} subject:\"Presentación Aquilae Relevo\""
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1088,
+        -1472
+      ],
+      "id": "88d55429-047f-4c8b-8cca-e7ae8a9e6bef",
+      "name": "Obtenemos primer correo enviado",
+      "webhookId": "c1a0aefb-86bc-4cf0-b809-c2fee58c3675",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SZPnG8wdT4jFlYNR",
+          "name": "Gmail - Aquilae (Sergi - Juan García)"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2535a191-58a2-403d-8c7b-511256bf7c17",
+              "leftValue": "={{ $json.id !== undefined }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        -1472
+      ],
+      "id": "e31cf71d-6b99-47a7-a28a-24a6c2b49bc2",
+      "name": "¿No ha contestado al primer correo?",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2
+              ],
+              "triggerAtHour": 3,
+              "triggerAtMinute": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -224,
+        560
+      ],
+      "id": "4e605e72-17ef-41ce-b5c3-e47d198e618f",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Stage",
+              "lookupValue": "Contactadas sin respuesta"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        560
+      ],
+      "id": "c363b05a-8dba-4f66-9f30-373bbc242db2",
+      "name": "Buscamos leads que no contestan1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4be90cba-b5f0-470a-a3a6-d0b0881c8206",
+              "name": "empresa",
+              "value": "={{ $json['Company Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "35c76bf1-b8c8-4adb-96d2-f350361dcdf5",
+              "name": "nombre_director",
+              "value": "={{ $json['Contact Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c6c2404c-86a0-4f15-8529-0e4e5951a2f6",
+              "name": "email",
+              "value": "={{ $json['Contact Email'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3c31807b-2c7c-4cd4-a6b9-627c52696879",
+              "name": "message_id",
+              "value": "={{ $json['Message ID (Email)'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1328,
+        560
+      ],
+      "id": "b502edf3-ca2a-4c9a-9d3c-a108ea6d05af",
+      "name": "Organizamos variables1",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1088,
+        544
+      ],
+      "id": "7e2bd94c-0d1e-41a5-a0f5-8a30ab48c0c4",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const hoy = new Date();\nconst dosSemanasAntes = new Date();\ndosSemanasAntes.setDate(hoy.getDate() - 14); // ⬅️ 14 días = 2 semanas\n\nreturn items.filter(item => {\n  const stage = (item.json.Stage || \"\").toLowerCase().trim();\n  const fechaRaw = item.json['Last interacted on'];\n\n  // Verificamos que haya valor en la fecha\n  if (!fechaRaw) return false;\n\n  // Extraer fecha del formato DD/MM/YYYY, HH:mm:ss\n  const [dia, mes, anio] = fechaRaw.split(',')[0].trim().split('/');\n  const fechaUltimoContacto = new Date(`${anio}-${mes}-${dia}`);\n\n  const esSinRespuesta = stage === 'contactadas sin respuesta';\n  const haceMasDe2Semanas = fechaUltimoContacto < dosSemanasAntes;\n\n  return esSinRespuesta && haceMasDe2Semanas;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        560
+      ],
+      "id": "9febb01d-c02a-4187-9c7c-ea3fc387806a",
+      "name": "Extraemos los que llevan 2 semanas sin contestar1"
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "get",
+        "threadId": "={{ $json.message_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1536,
+        560
+      ],
+      "id": "bd589a88-75ac-41b4-b4eb-b5506c69e889",
+      "name": "Get a thread",
+      "webhookId": "9a9ae0a3-a5d0-4352-80d4-71bc8597fce6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SZPnG8wdT4jFlYNR",
+          "name": "Gmail - Aquilae (Sergi - Juan García)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ Obtener hora actual en España correctamente\nconst ahoraEspaña = new Date().toLocaleString(\"en-US\", { timeZone: \"Europe/Madrid\" });\nconst horaEspaña = new Date(ahoraEspaña);\nconst horaActual = horaEspaña.getHours();\nconst saludo = horaActual < 14 ? \"Buenos días\" : \"Buenas tardes\";\n\n// ====== LIMPIAR Y FORMATEAR NOMBRE =======\nlet rawNombre = $('Organizamos variables1').first().json.nombre_director|| \"\";\nrawNombre = rawNombre.replace(/Don\\s+|Doña\\s+/gi, \"\").trim(); // quitar Don/Doña\nconst primerNombre = rawNombre.split(\" \")[0]; // solo el primer nombre\n\n// ====== LIMPIAR Y FORMATEAR EMPRESA =======\nlet rawEmpresa = $input.first().json.empresa || \"\";\n\n// Eliminar S.L., SL, S.A., SA, etc.\nrawEmpresa = rawEmpresa.replace(/\\bS\\.?L\\.?U?\\.?|\\bS\\.?A\\.?\\b/gi, \"\").trim();\n\n// Convertir a Title Case\nlet empresaFormateada = rawEmpresa\n  .toLowerCase()\n  .split(\" \")\n  .map(p => p.charAt(0).toUpperCase() + p.slice(1))\n  .join(\" \")\n  .replace(/\\.\\s*$/, \"\"); // ❌ Eliminar punto final si lo hay\n\n// Firma\nconst firma = `\n  <br>\n  <p><strong>Juan García</strong><br>\n  Analista - Aquilae Relevo<br>\n  <a href=\"https://aquilaerelevo.com\">aquilaerelevo.com</a><br>\n  +34 660 88 96 97</p>\n  <img src=\"https://drive.google.com/uc?id=1k-rJG3_bkpmUdARsJuMyHzkGscTUA22K\" width=\"150\" />\n`;\n\n// Plantilla corregida\nconst plantilla = `\n<p>${saludo}, ${primerNombre}.</p>\n\n<p>Ruego que disculpes mi insistencia, pero la verdad es que querríamos reafirmar nuestro interés en reunirnos con vosotros y que nos contarais acerca de <strong>${empresaFormateada}</strong> y vuestro proyecto.</p>\n\n<p>Estamos estudiando varias empresas del sector y creemos que os puede resultar interesante la propuesta de <strong>Aquilae Relevo</strong>, al enfocarse de manera diferencial en el empresario y permitirle dar continuidad a su proyecto al mismo tiempo que facilita la capitalización de su esfuerzo.</p>\n\n<p>Estaríamos encantados de reunirnos contigo y <strong>agradeceríamos si nos pudieras indicar un día y hora de tu conveniencia para conocernos o tener una llamada.</strong> Por nuestra parte, tenemos flexibilidad para reunirnos con vosotros.</p>\n\n<p>Gracias de antemano y un cordial saludo,</p>\n\n<br>\n--<br>\n${firma}\n`;\n\nreturn [\n  {\n    json: {\n      emailBody: plantilla,\n      subject: `Seguimiento - Aquilae Relevo`,\n      threadId: $input.first().json.messages[0].threadId,\n      messageId: $input.first().json.messages[0].id,\n      to: $input.first().json.messages[0].To\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2080,
+        544
+      ],
+      "id": "a98b07a6-a7cd-48b1-886e-f0bfc440244a",
+      "name": "Plantilla Follow-Up1"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $json.messageId }}",
+        "message": "={{ $json.emailBody }}",
+        "options": {
+          "ccList": "miguel.cano@aquilaerelevo.com, sergi.vaughan@aquilaerelevo.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2384,
+        544
+      ],
+      "id": "e7149136-56a4-4e51-b9c4-4eded3dcebcb",
+      "name": "Enviamos correo, contestando al anterior correo1",
+      "webhookId": "3a10c931-5438-4c07-bf77-a64d5401292d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SZPnG8wdT4jFlYNR",
+          "name": "Gmail - Aquilae (Sergi - Juan García)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Stage": "Follow-Up",
+            "row_number": "=",
+            "Contact Email": "={{ $('Organizamos variables1').item.json.email }}"
+          },
+          "matchingColumns": [
+            "Contact Email"
+          ],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Name",
+              "displayName": "Contact Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "EBITDA ('ooo€)",
+              "displayName": "EBITDA ('ooo€)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Revenue",
+              "displayName": "Revenue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CAGR (2019)",
+              "displayName": "CAGR (2019)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner \nage",
+              "displayName": "Owner \nage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Intial \ncheck",
+              "displayName": "Intial \ncheck",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CIF",
+              "displayName": "CIF",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Message ID (Email)",
+              "displayName": "Message ID (Email)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last interacted on",
+              "displayName": "Last interacted on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Creation date",
+              "displayName": "Creation date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Probability",
+              "displayName": "Probability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2704,
+        560
+      ],
+      "id": "88e6baac-b46f-4e4e-b054-c56530625e5d",
+      "name": "Actualizamos estado del AUTO_CRM1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2960,
+        544
+      ],
+      "id": "f6bbb97c-012b-4c8b-9780-6107370b4462",
+      "name": "Wait1",
+      "webhookId": "822f0b3f-7ebe-486a-a67c-160b2d4e943b"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        240
+      ],
+      "id": "3ef14ae2-9883-4f41-bc81-f454bafe410c",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2535a191-58a2-403d-8c7b-511256bf7c17",
+              "leftValue": "={{ $json.messages.length }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1760,
+        560
+      ],
+      "id": "cda521dd-5b41-4f92-ab81-60da20e22c19",
+      "name": "¿No ha contestado al primer correo?1"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2368,
+        208
+      ],
+      "id": "fda2d6e8-68fb-49ec-82a6-f22af6630374",
+      "name": "Wait2",
+      "webhookId": "e03abb85-3ab4-41d1-b13c-a63b306b7867"
+    },
+    {
+      "parameters": {
+        "maxItems": 10
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        800,
+        560
+      ],
+      "id": "99ef31a5-0ca8-47fd-a8dc-6531774ff1b1",
+      "name": "Limit: Cuantos correos quiero enviar de followup?"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Buscamos leads que no contestan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscamos leads que no contestan": {
+      "main": [
+        [
+          {
+            "node": "Extraemos los que llevan 2 semanas sin contestar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizamos variables": {
+      "main": [
+        [
+          {
+            "node": "Obtenemos primer correo enviado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plantilla Follow-Up": {
+      "main": [
+        [
+          {
+            "node": "Enviamos correo, contestando al anterior correo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviamos correo, contestando al anterior correo": {
+      "main": [
+        [
+          {
+            "node": "Actualizamos estado del AUTO_CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Organizamos variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizamos estado del AUTO_CRM": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraemos los que llevan 2 semanas sin contestar": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtenemos primer correo enviado": {
+      "main": [
+        [
+          {
+            "node": "¿No ha contestado al primer correo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿No ha contestado al primer correo?": {
+      "main": [
+        [
+          {
+            "node": "Plantilla Follow-Up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Buscamos leads que no contestan1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscamos leads que no contestan1": {
+      "main": [
+        [
+          {
+            "node": "Extraemos los que llevan 2 semanas sin contestar1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Organizamos variables1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraemos los que llevan 2 semanas sin contestar1": {
+      "main": [
+        [
+          {
+            "node": "Limit: Cuantos correos quiero enviar de followup?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizamos variables1": {
+      "main": [
+        [
+          {
+            "node": "Get a thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plantilla Follow-Up1": {
+      "main": [
+        [
+          {
+            "node": "Enviamos correo, contestando al anterior correo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviamos correo, contestando al anterior correo1": {
+      "main": [
+        [
+          {
+            "node": "Actualizamos estado del AUTO_CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizamos estado del AUTO_CRM1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿No ha contestado al primer correo?1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Plantilla Follow-Up1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a thread": {
+      "main": [
+        [
+          {
+            "node": "¿No ha contestado al primer correo?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing1": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit: Cuantos correos quiero enviar de followup?": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "5QdoxMXz2HWDSg0O"
+  },
+  "versionId": "96def528-03db-48fc-a52a-15f16fbddd7d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fdee5369c26d6859add6494f736bbaaa1d410971a99a9add0cb543feaaa53c31"
+  },
+  "id": "OO7cJDwlKZcryRrX",
+  "tags": []
+}
