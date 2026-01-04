@@ -1,0 +1,237 @@
+{
+  "name": "Notificar fin de base de datos - Sergi",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 2,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "e8be7d95-82b0-43de-9230-9209da3682c1",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "137N5UnUdtt3O3arp9UYsPHWthRkQ0MBVv5eBv3K8htk",
+          "mode": "list",
+          "cachedResultName": "2025_12_09_INPUT_Filtrado",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/137N5UnUdtt3O3arp9UYsPHWthRkQ0MBVv5eBv3K8htk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 892810108,
+          "mode": "list",
+          "cachedResultName": "Resultados",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/137N5UnUdtt3O3arp9UYsPHWthRkQ0MBVv5eBv3K8htk/edit#gid=892810108"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        160,
+        0
+      ],
+      "id": "19f0da3e-c1d1-4e9a-a994-d0f73636812d",
+      "name": "Buscamos filas en el sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Nombre exacto de la columna que quieres verificar\nconst columna = 'Procesado';\n\nlet rows = $input.all();\nlet vacias = 0;\n\nfor (const item of rows) {\n  const valor = item.json[columna];\n  if (!valor || valor.trim() === '') {\n    vacias++;\n  }\n}\n\n// Devolvemos el número de filas vacías\nreturn [\n  {\n    json: {\n      totalFilas: rows.length,\n      filasVacias: vacias,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ],
+      "id": "a9e54eb9-7164-4899-832b-83f98b71ce33",
+      "name": "Extraemos cuantas filas faltan por procesar"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "767e44df-caad-4cea-ba66-da4426e17b54",
+              "leftValue": "={{ $json.filasVacias }}",
+              "rightValue": 40,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "b47288cf-cee7-4808-b5d9-c5752a876075",
+      "name": "¿Faltan menos de 40 empresas?"
+    },
+    {
+      "parameters": {
+        "content": "## Trigger cada día a las 8:30 de la mañana"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -368,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "03a34483-f72d-4420-81a0-7a528ded8ce5",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        928,
+        128
+      ],
+      "id": "7689edd8-942f-4c80-b248-a64f74ca64a5",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://chat.googleapis.com/v1/spaces/AAQANHzUDqY/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=wSOKR9euZ3UBjQ7GOUK4Q7SNRsW1cePGhVhtcudcf_Y",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=Hola,\n\nLa base de datos de empresas para contactar está a punto de acabarse. Quedan {{ $json.filasVacias }} empresas sin procesar.\n\nEs recomendable preparar una nueva base de datos para continuar el trabajo y seguir contactando con empresas."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        928,
+        -96
+      ],
+      "id": "d820c251-9029-4070-9b0a-f589817562f8",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Buscamos filas en el sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscamos filas en el sheets": {
+      "main": [
+        [
+          {
+            "node": "Extraemos cuantas filas faltan por procesar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraemos cuantas filas faltan por procesar": {
+      "main": [
+        [
+          {
+            "node": "¿Faltan menos de 40 empresas?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Faltan menos de 40 empresas?": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "5QdoxMXz2HWDSg0O"
+  },
+  "versionId": "074ff5f3-5fe0-4502-953a-b42bbde5dfac",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fdee5369c26d6859add6494f736bbaaa1d410971a99a9add0cb543feaaa53c31"
+  },
+  "id": "sG8deLtnKlT1mkua",
+  "tags": []
+}
