@@ -1,4 +1,4 @@
-# 🤖 Automatización de Gestión de Respuestas a Propuestas de Negocio
+# 🤖 Automatización de Gestión de Respuestas de los leads a Propuestas de Negocio
 
 Este flujo en n8n permite gestionar automáticamente las respuestas recibidas de leads tras enviar una propuesta de negocio. Dependiendo del tipo de respuesta (interés, desinterés, solicitud de más información, nuevo contacto, etc.), el sistema toma decisiones automáticas para avanzar en el proceso comercial.
 
