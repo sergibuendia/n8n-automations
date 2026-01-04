@@ -1,0 +1,524 @@
+{
+  "name": "Correos sin contestar - Notificación de aviso",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 2,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -432,
+        0
+      ],
+      "id": "1604b291-b16f-40ee-970c-98e0c03ca7f7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "includeSpamTrash": false,
+          "q": "newer_than:5d is:inbox -from:@aquilaerelevo.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "35e28846-a0bb-4f97-bddd-4d9f71da7e72",
+      "name": "Buscamos correos sin contestar",
+      "webhookId": "888384c2-e157-4ede-8d3d-b4a7b8390d47",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SZPnG8wdT4jFlYNR",
+          "name": "Gmail - Aquilae (Sergi - Juan García)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "2 dias sin contestar:\n{{ Date.now() - 2 * 24 * 60 * 60 * 1000 }}\n\n10 minutos sin contestar: \n{{ Date.now() - 10 * 60 * 1000 }}"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1152,
+        -672
+      ],
+      "typeVersion": 1,
+      "id": "2caec870-b52b-4917-bbee-856e60983ceb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "batchSize": 50,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        448,
+        -112
+      ],
+      "id": "39602cf9-552a-41f6-a1d9-f6421d58f39e",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2848,
+        -96
+      ],
+      "id": "f7da129d-3c03-426e-98ee-57e3ca8084e3",
+      "name": "Wait",
+      "webhookId": "30c5ce79-0687-4af3-9bc9-8dc11ddd03bc"
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "get",
+        "threadId": "={{ $json.threadId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        736,
+        -96
+      ],
+      "id": "f9c785ac-7e28-4490-9ba3-ff437bf7171a",
+      "name": "Obtenemos hilo del mensaje",
+      "webhookId": "8cba6ff0-76b2-401a-ba3a-0f4eade2a533",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SZPnG8wdT4jFlYNR",
+          "name": "Gmail - Aquilae (Sergi - Juan García)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lista de emails del equipo que cuentan como \"respuesta válida\"\nconst equipoEmails = [\n  'sergi.vaughan@aquilaerelevo.com',\n  'juan.garcia@aquilaerelevo.com',\n  'miguel.cano@aquilaerelevo.com'\n];\n\nlet fueContestado = false;\n\nfor (const mensaje of $json.messages) {\n  const from = mensaje.payload?.headers?.find(h => h.name === 'From')?.value || '';\n  \n  if (equipoEmails.some(email => from.includes(email))) {\n    fueContestado = true;\n    break;\n  }\n}\n\nreturn fueContestado\n  ? [] // No hacemos nada si ya fue contestado\n  : [ { json: $json } ]; // Pasamos el mensaje si NO fue contestado\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        -96
+      ],
+      "id": "4405e286-e8d4-44cf-bc8f-e764ee86ac88",
+      "name": "Filtramos emails validos"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2825bd3f-523f-4557-914b-defa03778313",
+              "name": "nombre_contactado",
+              "value": "={{ $json.messages[1].From.split('<')[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "d3a2fcb7-d61f-4599-971d-78a9c6ab35e1",
+              "name": "empresa_contactada",
+              "value": "={{ $json.messages[1].Subject.replace('Re: Presentación Aquilae Relevo - ', '').trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "3992baca-91cb-41ae-837b-cecc1661d5ed",
+              "name": "correo",
+              "value": "={{ $json.messages[1].From.match(/<(.+?)>/)?.[1] || $json.messages[1].From.trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "5a1645dd-b518-44e3-a5be-e3fdcff825e6",
+              "name": "cuerpo_correo",
+              "value": "={{ $json.messages[1].snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "07c43134-3cb4-49e3-b269-70ca044b1583",
+              "name": "thread_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1808,
+        -96
+      ],
+      "id": "879a2aaf-1d65-4a27-8107-c4436a871483",
+      "name": "Organizamos variables"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ed1ce16c-41d6-4a0d-ac50-238906bd5215",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "Re: Presentación Aquilae Relevo",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "8b7ddc8c-c6d6-492e-93cc-92aa34643a04",
+              "leftValue": "={{ +$json.internalDate }}",
+              "rightValue": "={{ Date.now() - 2 * 24 * 60 * 60 * 1000 }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        0
+      ],
+      "id": "28772973-0bb6-4816-b99d-f1c9047099e0",
+      "name": "¿ + de 2 días sin contestar al primer contacto?"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        512,
+        240
+      ],
+      "id": "cba6f95c-9af4-47aa-88fd-8d832e1e82b8",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "content": "## Automatización programada cada día a las 8:30 am\n\n- ",
+        "height": 144,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -784,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "40b220bd-5ee6-4567-83c7-ffdc7fd8b495",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "rowNotExists",
+        "dataTableId": {
+          "__rl": true,
+          "value": "K6x580QyTtznOkCy",
+          "mode": "list",
+          "cachedResultName": "notificaciones_emails",
+          "cachedResultUrl": "/projects/StUJrVF5l1woSawb/datatables/K6x580QyTtznOkCy"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "threadId",
+              "keyValue": "={{ $json.messages[0].threadId }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        -96
+      ],
+      "id": "871b286c-3f8a-4d34-a048-b3648defc390",
+      "name": "Buscamos emails no notificados"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "K6x580QyTtznOkCy",
+          "mode": "list",
+          "cachedResultName": "notificaciones_emails",
+          "cachedResultUrl": "/projects/StUJrVF5l1woSawb/datatables/K6x580QyTtznOkCy"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "threadId": "={{ $('Organizamos variables').item.json.thread_id }}",
+            "fecha": "={{ $now.toLocaleString(\"es-ES\", { timeZone: \"Europe/Madrid\" }) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        -96
+      ],
+      "id": "28d363b7-4c31-4003-b9b1-1c8097d72b96",
+      "name": "Agregamos email notificado"
+    },
+    {
+      "parameters": {
+        "content": "## Tenemos un data table en el cual se van guardando todos los correos los cuales ya hemos recibido una notificación por no contestar.\n\n- Si ya hemos recibido una notificación de alerta para contestar a un correo, no nos volverá a llegar\n\nDe esta manera, solo nos llegara una notificación por un correo no contestado",
+        "height": 272,
+        "width": 768
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1104,
+        384
+      ],
+      "typeVersion": 1,
+      "id": "821f27c8-519e-4d8e-9a4e-a04ca8a2b663",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://chat.googleapis.com/v1/spaces/AAQAIZlDEMU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=vMAN9dtf4ah5Lk2eINKLh7jWT2DjvbftapBOHdmy75E",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=Se ha recibido un correo hace más de 2 días al que nadie ha respondido aún.\n\n\n👤 De:\n{{ $json.nombre_contactado }} - {{ $json.correo }}\n\n📌 Cuerpo del correo:\n{{ $json.cuerpo_correo }} [...]\n\n📎 Ver hilo en Gmail:\nhttps://mail.google.com/mail/u/0/#inbox/{{ $json.thread_id }}\n\nRevisad por favor el hilo desde Gmail para responder cuanto antes."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2160,
+        -96
+      ],
+      "id": "5b35a0a5-f9c2-4ff1-b8f9-75ab54b44e43",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Buscamos correos sin contestar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscamos correos sin contestar": {
+      "main": [
+        [
+          {
+            "node": "¿ + de 2 días sin contestar al primer contacto?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Obtenemos hilo del mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtenemos hilo del mensaje": {
+      "main": [
+        [
+          {
+            "node": "Buscamos emails no notificados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtramos emails validos": {
+      "main": [
+        [
+          {
+            "node": "Organizamos variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizamos variables": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿ + de 2 días sin contestar al primer contacto?": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscamos emails no notificados": {
+      "main": [
+        [
+          {
+            "node": "Filtramos emails validos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agregamos email notificado": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Agregamos email notificado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "5QdoxMXz2HWDSg0O"
+  },
+  "versionId": "7f3b20e6-0eb1-4538-92a5-5ea559349256",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fdee5369c26d6859add6494f736bbaaa1d410971a99a9add0cb543feaaa53c31"
+  },
+  "id": "lqgPHhFk4d2vxfMk",
+  "tags": []
+}
