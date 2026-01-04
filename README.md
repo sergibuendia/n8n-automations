@@ -5,4 +5,4 @@ Automatizaciones realizadas con la plataforma n8n. En este repositorio hay autom
 **Sergi Buendia**  
 - 🔗 [github.com/sergibuendia](https://github.com/sergibuendia)
 - 🔗 Linkedin: [https://www.linkedin.com/in/sergi-buendia-arnau-4b9013234/]
--  WhatsApp: +34 644 915 496
+- 🔗 WhatsApp: +34 644 915 496
