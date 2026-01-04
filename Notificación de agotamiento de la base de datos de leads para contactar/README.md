@@ -1,4 +1,4 @@
-# 📉 Automatización de Alerta por Agotamiento de Base de Leads (n8n)
+# 📉 Automatización de alerta por agotamiento de la base de datos de Leads para contactar
 
 Este flujo en n8n monitorea de forma automática la cantidad de registros restantes en la base de datos de leads. Cuando detecta que quedan menos de 40 registros por procesar, envía una notificación al equipo a través de un chat corporativo de Gmail (API) para que preparen con antelación una nueva base de datos, evitando interrupciones en el flujo de trabajo.
 
