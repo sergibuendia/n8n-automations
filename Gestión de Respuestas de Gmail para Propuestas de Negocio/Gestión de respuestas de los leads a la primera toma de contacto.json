@@ -1,0 +1,2295 @@
+{
+  "name": "Interesadas (Reporte) / Descartadas -  (Sergi) (BUENO) COPIA",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const rawText = $input.first().json.text || '';\n\n// Paso 1: Quitar líneas típicas de firmas o disclaimers\nconst líneas = rawText\n  .split('\\n')\n  .map(line => line.trim())\n  .filter(line => {\n    const lower = line.toLowerCase();\n    return (\n      line.length > 0 &&\n      !lower.startsWith('protection de datos') &&\n      !lower.includes('facebook') &&\n      !lower.includes('linkedin') &&\n      !lower.includes('twitter') &&\n      !lower.includes('instagram') &&\n      !lower.includes('web:') &&\n      !lower.includes('email:') &&\n      !lower.includes('mov:') &&\n      !lower.includes('tlf:') &&\n      !lower.includes('ceo') &&\n      !lower.includes('ingeniería') &&\n      !lower.includes('s.l.') &&\n      !lower.includes('reglamento') &&\n      !lower.includes('protección de datos') &&\n      !lower.includes('conformidad') &&\n      !lower.includes('av.') &&\n      !lower.includes('calle') &&\n      !lower.includes('firma') &&\n      !lower.includes('Director') &&\n      !lower.includes('CEO') &&\n      !lower.includes('M.') &&\n      !lower.includes('mailto:') &&\n      !lower.includes('https://')\n    );\n  });\n\n// Paso 2: Buscar saludo de cierre para recortar\nconst saludosCierre = ['un saludo', 'saludos', 'seguimos en contacto', 'quedo atento', 'atentamente', 'M.', 'CEO', 'Director'];\n\nlet mensajeFinal = [];\nfor (const linea of líneas) {\n  mensajeFinal.push(linea);\n  const lower = linea.toLowerCase();\n  if (saludosCierre.some(saludo => lower.includes(saludo))) {\n    break; // cortamos aquí\n  }\n}\n\nreturn [{ json: { mensajeLimpio: mensajeFinal.join('\\n') } }];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -5840,
+        -176
+      ],
+      "id": "2899d2cb-50e0-4418-8355-19d19722017a",
+      "name": "Limpiamos correo para verlo entero"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company Name": "={{ $json.name.replace(/^Reporte empresa\\s*-\\s*/i, \"\").trim() }}",
+            "Stage": "Respuesta",
+            "ID Template Reporte Financiero": "={{ $('Añadimos Template a \\'3 - Financials\\'1').item.json.id }}"
+          },
+          "matchingColumns": [
+            "Company Name"
+          ],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Name",
+              "displayName": "Contact Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "EBITDA ('ooo€)",
+              "displayName": "EBITDA ('ooo€)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Revenue",
+              "displayName": "Revenue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CAGR (2019)",
+              "displayName": "CAGR (2019)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner \nage",
+              "displayName": "Owner \nage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Intial \ncheck",
+              "displayName": "Intial \ncheck",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CIF",
+              "displayName": "CIF",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message ID (Email)",
+              "displayName": "Message ID (Email)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID Template Reporte Financiero",
+              "displayName": "ID Template Reporte Financiero",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Last interacted on",
+              "displayName": "Last interacted on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Creation date",
+              "displayName": "Creation date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Probability",
+              "displayName": "Probability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2080,
+        -1360
+      ],
+      "id": "b48a3186-a267-441e-b928-697a3353c924",
+      "name": "Actualizamos estado a 'respuesta'1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ✅ Obtener hora actual en España\nconst ahoraEspaña = new Date().toLocaleString(\"en-US\", { timeZone: \"Europe/Madrid\" });\nconst horaEspaña = new Date(ahoraEspaña);\nconst horaActual = horaEspaña.getHours();\nconst saludo = horaActual < 14 ? \"Buenos días\" : \"Buenas tardes\";\n\n// ====== LIMPIAR Y FORMATEAR NOMBRE =======\nlet rawNombre = $input.first().json['Contact Name'];\nrawNombre = rawNombre.replace(/Don\\s+|Doña\\s+/gi, \"\").trim(); // quitar Don/Doña\nconst primerNombre = rawNombre.split(\" \")[0]; // solo el primer nombre\n\n// ====== LIMPIAR Y FORMATEAR EMPRESA =======\nlet rawEmpresa = $input.first().json['Company Name'] || \"\";\n\n// Eliminar S.L., SL, S.A., SA, SLU, etc.\nrawEmpresa = rawEmpresa.replace(/\\bS\\.?L\\.?U?\\.?|S\\.?A\\.?\\.?\\b/gi, \"\").trim();\n\n// Convertir a Title Case\nconst empresaFormateada = rawEmpresa\n  .toLowerCase()\n  .split(\" \")\n  .map(p => p.charAt(0).toUpperCase() + p.slice(1))\n  .join(\" \");\n\n// Firma\nconst firma = `\n  <br>\n  <p><strong>Juan Garcia</strong><br>\n  Analista - Aquilae Relevo<br>\n  <a href=\"https://aquilaerelevo.com\">aquilaerelevo.com</a><br>\n  +34 633 24 26 78</p>\n  <img src=\"https://drive.google.com/uc?id=1k-rJG3_bkpmUdARsJuMyHzkGscTUA22K\" width=\"150\" />\n`;\n\n// ======= PLANTILLA DE DESPEDIDA =======\nconst plantilla = `\n<p>${saludo},</p>\n\n<p>Antes de nada, muchas gracias por su respuesta.</p>\n\n<p>Tomamos nota de sus palabras en este sentido. No obstante, le animo a que consulte nuestra web <a href=\"https://aquilaerelevo.com\">Aquilae Relevo</a> si desea obtener más información sobre lo que hacemos y nuestro proyecto empresarial.</p>\n\n<p>Por nuestra parte, quedamos a su entera disposición por si en otro momento pudiera interesarle.</p>\n\n<p>Un cordial saludo,</p>\n\n<br>\n--<br>\n${firma}\n`;\n\n// === OUTPUT FINAL ===\nreturn [\n  {\n    json: {\n      emailBody: plantilla,\n      subject: `Gracias por su respuesta - Aquilae Relevo`,\n      to: $input.first().json['Contact Email']\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3840,
+        -272
+      ],
+      "id": "412be0bf-023e-46a5-a71a-42391b160131",
+      "name": "Plantilla 'No interesados'1"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Organizamos variables').item.json.message_id }}",
+        "message": "={{ $json.emailBody }}",
+        "options": {
+          "ccList": "miguel.cano@aquilaerelevo.com, sergi.vaughan@aquilaerelevo.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -3584,
+        -256
+      ],
+      "id": "74d3343e-3f12-4545-b326-bd1ef5b65f23",
+      "name": "Contestamos al correo1",
+      "webhookId": "91057f5a-5880-4481-96b9-aa655b00658e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SZPnG8wdT4jFlYNR",
+          "name": "Gmail - Aquilae (Sergi - Juan García)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company Name": "={{ $('Organizamos variables').item.json.nombre_empresa }}",
+            "Stage": "Reunión rechazada"
+          },
+          "matchingColumns": [
+            "Company Name"
+          ],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Name",
+              "displayName": "Contact Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "EBITDA ('ooo€)",
+              "displayName": "EBITDA ('ooo€)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Revenue",
+              "displayName": "Revenue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CAGR (2019)",
+              "displayName": "CAGR (2019)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner \nage",
+              "displayName": "Owner \nage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Intial \ncheck",
+              "displayName": "Intial \ncheck",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CIF",
+              "displayName": "CIF",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message ID (Email)",
+              "displayName": "Message ID (Email)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last interacted on",
+              "displayName": "Last interacted on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Creation date",
+              "displayName": "Creation date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Probability",
+              "displayName": "Probability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3216,
+        -288
+      ],
+      "id": "939f4a2f-a16f-47ec-aac2-577f177eea69",
+      "name": "Actualizamos estado a 'Discarded'1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -4208,
+        368
+      ],
+      "id": "116710b0-2378-4296-87b0-fea524302fc7",
+      "name": "No Operation, do nothing7"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Analizamos correo recibido').item.json.output[0].content[0].text }}",
+                    "rightValue": "=interesado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "36cc32b9-3a6b-494d-b1b3-7b5b316bc79c"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "interesado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dcb78cd8-13b9-402d-a305-437be1909d1e",
+                    "leftValue": "={{ $('Analizamos correo recibido').item.json.output[0].content[0].text }}",
+                    "rightValue": "no_interesado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "no_interesado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "88d83079-a64c-4e11-8161-1b9cf73e46fb",
+                    "leftValue": "={{ $('Analizamos correo recibido').item.json.output[0].content[0].text }}",
+                    "rightValue": "nuevo_correo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "nuevo_correo"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b26304d9-2a56-4926-aba4-8020afec8057",
+                    "leftValue": "={{ $('Analizamos correo recibido').item.json.output[0].content[0].text }}",
+                    "rightValue": "mas_información",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "mas_información"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "06d038c0-4a50-41b0-96df-b8d3e287bcb7",
+                    "leftValue": "={{ $('Analizamos correo recibido').item.json.output[0].content[0].text }}",
+                    "rightValue": "otro",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "otro"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -4544,
+        -96
+      ],
+      "id": "6ca22948-02c5-425d-9628-5945c7d0686f",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -4032,
+        112
+      ],
+      "id": "6f8e55af-b4c5-4bd3-8f73-471c6fc96c72",
+      "name": "No Operation, do nothing8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -3936,
+        -64
+      ],
+      "id": "a23865ae-15f1-4946-b456-94bf9322dc65",
+      "name": "No Operation, do nothing9"
+    },
+    {
+      "parameters": {
+        "amount": 15,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -4128,
+        -288
+      ],
+      "id": "446eecb1-4190-4d3c-a68e-e299e04082c9",
+      "name": "15 mins de espera1",
+      "webhookId": "920f3d70-8615-458d-b093-e0f69dc63a2d"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://google.serper.dev/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "8079d95f60ce18455beb1c40caf7e70b07751a38"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"q\": \"sitio oficial {{ $json.Website }}, nombre de la empresa {{ $json['Company Name'] }}. Información completa sobre la empresa: a qué se dedica, historia, año de creación, misión, visión, valores, productos o servicios, clientes, cifras económicas, EBITDA, facturación, número de empleados, ubicación, contacto y todo lo relevante. site: {{ $json.Website }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3264,
+        -688
+      ],
+      "id": "5fa6c892-4377-492d-ac80-bc4169214716",
+      "name": "Reporte de la empresa - Serper1",
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -3040,
+        -672
+      ],
+      "id": "56d1acab-a49e-4327-a0d8-26516d571eb9",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data; // El HTML completo de la web\n\n// 1. Eliminamos scripts y estilos\nlet clean = html\n  .replace(/<script[^>]*>([\\s\\S]*?)<\\/script>/gi, '')\n  .replace(/<style[^>]*>([\\s\\S]*?)<\\/style>/gi, '');\n\n// 2. Eliminamos el resto de etiquetas HTML\nclean = clean.replace(/<[^>]+>/g, '');\n\n// 3. Decodificamos entidades HTML (como &nbsp;, &eacute;, etc)\nconst decode = (str) => {\n  return str\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&quot;/g, '\"')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&#39;/g, \"'\")\n    .replace(/&#x2F;/g, '/')\n    .replace(/&hellip;/g, '...')\n    .replace(/\\s{2,}/g, ' ')\n    .trim();\n};\n\nclean = decode(clean);\n\n// 4. Devolvemos el texto limpio como output\nreturn [{ plainText: clean }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2384,
+        -1072
+      ],
+      "id": "d145fbe0-9251-4920-9432-b9f6c11509df",
+      "name": "Limpiamos info extraída1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "886cf239-8f44-494e-b567-3f20c31f5a86",
+              "name": "html_body",
+              "value": "={{ $json.output[0].content[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1792,
+        -1072
+      ],
+      "id": "53529422-f0d4-4d70-8a65-78458d254d9f",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "folderId": "1too6o91cr_9HT_dmwi04hjofJ6UNEAwq",
+        "title": "=Reporte empresa - {{ $('Extraemos info de la empresa1').item.json['Company Name'] }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -2768,
+        -672
+      ],
+      "id": "8cc0497e-ede6-4534-8158-0ddb9b1a7efe",
+      "name": "Creamos reporte1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "Qp2WaJuFFhrGKJV0",
+          "name": "Google Docs - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $('Edit Fields4').first().json.html_body;\n\n// 1. Eliminar \"**\" del título (solo lo dejamos como texto plano)\nlet text = raw.replace(/^\\*\\*(.*?)\\*\\*/gm, '$1');\n\n// 2. Eliminar asteriscos que marcan negrita\ntext = text.replace(/\\*\\*(.*?)\\*\\*/g, '$1');\n\n// 3. Quitar cabeceras tipo \"###\"\ntext = text.replace(/^#+\\s*/gm, '');\n\n// 4. Quitar separadores tipo \"---\"\ntext = text.replace(/^-{2,}$/gm, '');\n\n// 5. Normalizar espacios y saltos de línea\ntext = text.replace(/\\n{3,}/g, '\\n\\n').trim();\n\n// 6. Añadir 🔹 delante de los subtítulos numerados (pero no al título)\ntext = text.replace(/^(\\d+\\.\\s)/gm, '🔹 $1');\n\n// 7. También aplicar 🔹 a \"Conclusión\" si aparece\ntext = text.replace(/^Conclusión/gm, '🔹 Conclusión');\n\nreturn {\n  json: {\n    cleanText: text\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1520,
+        -1072
+      ],
+      "id": "36410512-de8b-466d-9db1-ab4b5db79cf4",
+      "name": "Limpiamos texto ChatGPT2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company Name",
+              "lookupValue": "={{ $('Get row(s) in sheet2').item.json['Company Name'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3744,
+        -688
+      ],
+      "id": "22ae4d21-106a-43c8-8541-cab491f5110c",
+      "name": "Extraemos info de la empresa1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Reporte de la empresa - Serper1').item.json.organic[0].link }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2496,
+        -672
+      ],
+      "id": "9ccd6da8-e5d8-448d-bed7-5cf9c4e8383d",
+      "name": "Analizamos web y extraemos HTML1",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Quiero que redactes un informe bien estructurado y profesional sobre la siguiente empresa, con base en la información encontrada en Internet (proviene de resultados de búsqueda de Google):\n\n---  \n{{ $json.plainText }}\n---\n\nEl objetivo es enviar este informe por correo a mis compañeros de trabajo. Por favor:\n\n1. Resume la información de forma clara y concisa.\n2. Divide el informe en secciones si es posible (por ejemplo: Quiénes son, Qué hacen, Productos/servicios, Datos económicos, Historia, Ubicación, etc.).\n3. Usa un lenguaje profesional pero fácil de entender.\n4. Evita repetir contenido innecesario. No incluyas URLs ni referencias a Google.\n\nEmpieza el informe con un pequeño título como: **Resumen empresa: [Nombre Empresa]**\n\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -2176,
+        -1072
+      ],
+      "id": "72dfa8b5-5a89-4ab7-9da7-36f77d636d3d",
+      "name": "Generamos reporte2",
+      "credentials": {
+        "openAiApi": {
+          "id": "LwlqtnMdIGJIJKAj",
+          "name": "OpenAi account - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $('Creamos reporte1').item.json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $json.cleanText }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -1248,
+        -1072
+      ],
+      "id": "3f896c91-d2fc-4658-9789-df5249d76ef6",
+      "name": "Añadimos info al reporte2",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "Qp2WaJuFFhrGKJV0",
+          "name": "Google Docs - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://docs.googleapis.com/v1/documents/{{ $('Añadimos info al reporte2').item.json.documentId }}:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "requests",
+              "value": "={{ $json.requests }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -688,
+        -1072
+      ],
+      "id": "39208f1c-d379-4c4d-8415-4568c210739a",
+      "name": "Retocamos el documento del reporte2",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "Qp2WaJuFFhrGKJV0",
+          "name": "Google Docs - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "Candidatas",
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -336,
+        -1056
+      ],
+      "id": "c9a03127-d1cd-4246-9cf7-a50b1cd6a76f",
+      "name": "Buscamos carpeta 'Candidatas'3",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Rv6PmLmJHO5p0VEB",
+          "name": "Google Drive - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $('Limpiamos texto ChatGPT2').first().json.cleanText;\n\nlet requests = [];\nconst lines = text.split('\\n');\nlet cursor = 0;\n\n// TITULO PRINCIPAL (primera línea)\nif (lines.length > 0) {\n  const title = lines[0];\n  requests.push({\n    updateTextStyle: {\n      range: {\n        startIndex: 1,\n        endIndex: title.length + 1\n      },\n      textStyle: {\n        bold: true,\n        fontSize: {\n          magnitude: 18,\n          unit: \"PT\"\n        }\n      },\n      fields: \"bold,fontSize\"\n    }\n  });\n  cursor += title.length + 1; // sumar salto de línea\n}\n\n// RESTO DE LÍNEAS\nfor (let i = 1; i < lines.length; i++) {\n  const line = lines[i];\n  const length = line.length + 1;\n\n  // Detecta subtítulos tipo \"🔹 3. Servicios\", \"🔹 Conclusión\", etc.\n  if (/^🔹\\s+\\d+\\.\\s+/.test(line) || /^🔹\\s+Conclusión/.test(line)) {\n    requests.push({\n      updateTextStyle: {\n        range: {\n          startIndex: cursor + 1,\n          endIndex: cursor + line.length + 1\n        },\n        textStyle: {\n          bold: true,\n          fontSize: {\n            magnitude: 14,\n            unit: \"PT\"\n          }\n        },\n        fields: \"bold,fontSize\"\n      }\n    });\n  }\n\n  cursor += length;\n}\n\nreturn {\n  json: {\n    requests,\n    finalText: text\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -928,
+        -1072
+      ],
+      "id": "575adae5-44be-4cb0-b65d-c7a37dfc1e4d",
+      "name": "Retocamos documento2"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "='{{ $json.id }}' in parents and mimeType = 'application/vnd.google-apps.folder'",
+        "returnAll": true,
+        "filter": {
+          "whatToSearch": "folders"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -144,
+        -1056
+      ],
+      "id": "d0815b62-1bff-4f8a-a233-f5266b24f9a0",
+      "name": "Buscamos carpetas existentes en 'Candidatas'2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Rv6PmLmJHO5p0VEB",
+          "name": "Google Drive - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Paso 1: Obtener nombres de carpetas desde el nodo anterior\nconst folderNames = items.map(item => item.json.name);\n\n// Paso 2: Extraer el número inicial de cada carpeta (ej. 27 de '27_Empresa')\nconst numbers = folderNames.map(name => {\n  const match = name.match(/^(\\d+)_/); // Busca número al principio seguido de guión bajo\n  return match ? parseInt(match[1]) : null;\n}).filter(n => n !== null); // Filtra posibles null si alguna carpeta no cumple el patrón\n\n// Paso 3: Calcular el siguiente número (basado en el mayor)\nconst nextNumber = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;\n\n// Paso 4: Obtener nombre de la empresa de la que estamos haciendo el reporte:\nconst companyName = $('Extraemos info de la empresa1').first().json['Company Name'] || 'Empresa';\n\n// Paso 5: Limpiar el nombre para que sea compatible con nombres de carpeta\nconst safeName = companyName.replace(/[^\\w\\s]/g, '').replace(/\\s+/g, '_');\n\n// Paso 6: Generar nombre final\nconst newFolderName = `${nextNumber}_${safeName}`;\n\n// Paso 7: Obtener ID de la carpeta 'Candidatas'\nconst parentFolderId = $('Buscamos carpeta \\'Candidatas\\'3').first().json.id;\n\n// ✅ Paso 8: Obtener documentId del reporte de Google Docs\nconst documentId = $('Edit Fields5').first().json.reporte_id;\n\n// ✅ Paso 9: Devolver todo junto\nreturn [\n  {\n    json: {\n      newFolderName,\n      parentFolderId,\n      documentId\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -1040
+      ],
+      "id": "a65de621-22fd-4545-95a3-96f393399c13",
+      "name": "Renombramos carpeta para empresa nueva2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "351bfcb6-860d-48f1-8978-c0b38af8c950",
+              "name": "reporte_id",
+              "value": "={{ $('Retocamos el documento del reporte2').item.json.documentId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -496,
+        -1056
+      ],
+      "id": "810ebf8f-f623-4c3e-8496-fbac3a26c723",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Subcarpetas deseadas\nconst subfolders = [\n  '1 - Info recibida',\n  '2 - Info disponible',\n  '3 - Financials',\n  '4 - Wip',\n  '5 - Documentos legales'\n];\n\n// ID de la carpeta recién creada para la empresa\nconst parentId = $input.first().json.id; // Este ID viene del nodo \"Create folder\"\n\n// Crear un item por cada subcarpeta\nreturn subfolders.map(name => ({\n  json: {\n    folderName: name,\n    parentId: parentId\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -1056
+      ],
+      "id": "73b27228-3b71-496d-867a-c2da556b06ae",
+      "name": "Creamos subcarpetas2"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [items[0]];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        -1344
+      ],
+      "id": "6d3a87de-010b-44aa-ada7-8e6be0b96154",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company Name": "={{ $json['Company Name'] }}",
+            "Stage": "Respuesta"
+          },
+          "matchingColumns": [
+            "Company Name"
+          ],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Name",
+              "displayName": "Contact Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "EBITDA ('ooo€)",
+              "displayName": "EBITDA ('ooo€)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Revenue",
+              "displayName": "Revenue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CAGR (2019)",
+              "displayName": "CAGR (2019)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner \nage",
+              "displayName": "Owner \nage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Intial \ncheck",
+              "displayName": "Intial \ncheck",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CIF",
+              "displayName": "CIF",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage",
+              "displayName": "Stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message ID (Email)",
+              "displayName": "Message ID (Email)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last interacted on",
+              "displayName": "Last interacted on",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website",
+              "displayName": "Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Creation date",
+              "displayName": "Creation date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Probability",
+              "displayName": "Probability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3488,
+        -688
+      ],
+      "id": "c813ccfe-e69d-4ac2-8804-4f49d6e1e542",
+      "name": "Actualizamos estado a 'respuesta'2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -3776,
+        -992
+      ],
+      "id": "977e71c2-8aa5-4ed7-9204-c0ff373a7385",
+      "name": "No Operation, do nothing10"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json['Company Name'] }}",
+        "filter": {
+          "driveId": {
+            "__rl": true,
+            "value": "0AKs6cgTa3TjOUk9PVA",
+            "mode": "list",
+            "cachedResultName": "DROPBOX",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/0AKs6cgTa3TjOUk9PVA"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1u62g2SyIEgnqkEoQDsSc1xLcAF8NOTVh",
+            "mode": "id"
+          },
+          "whatToSearch": "folders"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -4304,
+        -464
+      ],
+      "id": "327269ef-bce6-4d1c-ab27-894c382782ce",
+      "name": "Buscamos si ya existe reporte creado1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Rv6PmLmJHO5p0VEB",
+          "name": "Google Drive - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fd433bfa-a8fd-40ef-bd55-0f147cb0bc30",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3968,
+        -624
+      ],
+      "id": "da82bfa5-a6d4-421c-9709-971f83ccff29",
+      "name": "¿El reporte ya está creado?1"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.newFolderName }}",
+        "driveId": {
+          "__rl": true,
+          "value": "0AKs6cgTa3TjOUk9PVA",
+          "mode": "list",
+          "cachedResultName": "DROPBOX",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0AKs6cgTa3TjOUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.parentFolderId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        416,
+        -1056
+      ],
+      "id": "6e4523ea-08a8-4f7b-8356-efcc8ddede2c",
+      "name": "Creamos carpeta para nueva empresa1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Rv6PmLmJHO5p0VEB",
+          "name": "Google Drive - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "sender": "amolina@acoeman.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -6432,
+        -64
+      ],
+      "id": "10d1ff9d-f784-42bb-a0bf-57c6b7e7b880",
+      "name": "Gmail Trigger1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SZPnG8wdT4jFlYNR",
+          "name": "Gmail - Aquilae (Sergi - Juan García)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Analiza el siguiente mensaje recibido por correo electrónico y responde con **una sola palabra** entre las siguientes opciones:\n\n- \"no_interesado\": si la persona comunica que no está interesada en nuestra propuesta, aunque sea educadamente o rechace de forma indirecta.\n- \"nuevo_correo: example@dominio.com\": si el mensaje incluye una nueva dirección de correo electrónico a la que deberíamos reenviar la propuesta (por ejemplo, si aparece otra dirección con \"@\"). \n- \"mas_informacion\": si la persona menciona una nueva dirección de correo a la que deberíamos reenviar la propuesta. En ese caso, extrae y devuelve solo esa dirección en este formato exacto: `nuevo_correo: correo@ejemplo.com`.\n- \"interesado\": si la persona muestra interés real en avanzar, reunirse o colaborar. Solo quiero que pasen por aquí los que muestran interés al primer email de contacto, es decir, si quieren hacer una videollamada, una reunión o una llamada. Si hablan de cualquier otro tema que no tenga que ver con estar interesado a la propuesta, catalogar como 'otro'.\n- \"otro\": si la persona no deja claro cualquiera de las anteriores, o habla sobre algún otro tema que no tenga que ver con estar interesado a la primera propuesta, cataloga el correo como 'otro'\n\nResponde únicamente con una de estas cuatro palabras sin añadir explicaciones.\n\n---\n\nMensaje:\n{{ $json.mensajeLimpio }}\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        -5536,
+        -64
+      ],
+      "id": "361220ba-a76c-439c-913a-6de0762d381e",
+      "name": "Analizamos correo recibido",
+      "credentials": {
+        "openAiApi": {
+          "id": "cVdTEj3JsvHGE8lL",
+          "name": "OpenAi account - Sergi Personal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "72e09936-0528-4c61-8ab7-c4e7debea9ee",
+              "name": "nombre_contatado",
+              "value": "={{ $('Gmail Trigger1').item.json.from.value[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "f6bf529f-6095-4b25-8c43-649213ad10b6",
+              "name": "hilo_id",
+              "value": "={{ $('Gmail Trigger1').item.json.threadId }}",
+              "type": "string"
+            },
+            {
+              "id": "ed0b6a50-af4e-4dba-9ec4-748f6aa1a6ad",
+              "name": "message_id",
+              "value": "={{ $('Gmail Trigger1').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "e3366a94-b11c-4e63-88f5-8d3026b335b1",
+              "name": "nombre_empresa",
+              "value": "={{ $('Gmail Trigger1').item.json.subject.replace(/^Re:\\s*Presentación Aquilae Relevo\\s*-\\s*/i, \"\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "b3c0e067-eafb-46e8-9178-3f5e5be912b9",
+              "name": "nombre + email",
+              "value": "={{ $('Gmail Trigger1').item.json.from.text }}",
+              "type": "string"
+            },
+            {
+              "id": "2b3c7017-bf23-4364-819d-9cbbe87ff478",
+              "name": "nombre_y_apellido",
+              "value": "={{ $('Gmail Trigger1').item.json.from.value[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "5b29a2c2-3ff5-44c5-81c5-088318a6a754",
+              "name": "a quien se envia el correo",
+              "value": "={{ $('Gmail Trigger1').item.json.to.value[0].address }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5104,
+        -48
+      ],
+      "id": "c6c52968-96ca-4584-97ca-2e5b8d5a1d10",
+      "name": "Organizamos variables"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -5696,
+        160
+      ],
+      "id": "aad964f3-b6d3-41d6-982c-2e64e32e0cfb",
+      "name": "No Operation, do nothing11"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g",
+          "mode": "list",
+          "cachedResultName": "AUTO_CRM_Aquilae",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 622847661,
+          "mode": "list",
+          "cachedResultName": "Sales Funnel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_5tUG2tBnC2G2qnga4loIkp0MBp3ijpQ6UlBVDjlZ8g/edit#gid=622847661"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company Name",
+              "lookupValue": "={{ $json.nombre_empresa.trim() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4832,
+        -32
+      ],
+      "id": "df0565f2-19f4-44e9-987b-13058ad78847",
+      "name": "Get row(s) in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8dKbIIL8sVHldOat",
+          "name": "Google Sheets - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1468daba-7afc-4a83-b46d-16e2f8a6b4d5",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "3 - Financials",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        -1088
+      ],
+      "id": "c0b349dd-9d86-4860-a476-f5b2c04999e2",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Renombramos carpeta para empresa nueva2').item.json.documentId }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "value": "0AKs6cgTa3TjOUk9PVA",
+          "mode": "list",
+          "cachedResultName": "DROPBOX",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0AKs6cgTa3TjOUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Creamos carpeta para nueva empresa1').item.json.id }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1600,
+        -1344
+      ],
+      "id": "1d8ac9d3-938b-40da-ae71-3a87f7280b74",
+      "name": "Movemos reporte a carpeta general creada",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Rv6PmLmJHO5p0VEB",
+          "name": "Google Drive - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.folderName }}",
+        "driveId": {
+          "__rl": true,
+          "value": "0AKs6cgTa3TjOUk9PVA",
+          "mode": "list",
+          "cachedResultName": "DROPBOX",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0AKs6cgTa3TjOUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.parentId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        896,
+        -1072
+      ],
+      "id": "c2baabb3-7f5f-4115-a51f-0a704093972a",
+      "name": "Creamos 5 subcarpetas1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Rv6PmLmJHO5p0VEB",
+          "name": "Google Drive - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1fstE2RpKHkj23vr3iQclPfxCLf-ZrmQ2yZ_QA7RvWDs",
+          "mode": "id"
+        },
+        "name": "=DFC_Project_Template",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "value": "0AKs6cgTa3TjOUk9PVA",
+          "mode": "list",
+          "cachedResultName": "DROPBOX",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0AKs6cgTa3TjOUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1328,
+        -1360
+      ],
+      "id": "db92c431-ada1-41d3-90af-7c1c2a8bb096",
+      "name": "Añadimos Template a '3 - Financials'1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Rv6PmLmJHO5p0VEB",
+          "name": "Google Drive - Aquilae (Sergi)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://chat.googleapis.com/v1/spaces/AAQAawA6Gzk/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=NWI4Q52fUVGYRqy4RxX3fLjyirhacKwteAiceeSKODw",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=✅ Reporte empresa - {{ $json['Company Name'] }}- El reporte de la empresa interesada ya ha sido generado. \n\n📄 Puedes verlo aquí: https://docs.google.com/document/d/{{ $('Code in JavaScript2').item.json.id }}\n\nATENCIÓN: Añadir información financiera de la empresa al Sheets de la subcarpeta 3 - \"Financials\" para generar el reporte financiero"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2320,
+        -1360
+      ],
+      "id": "0ccbdc1e-2b97-4a5b-9b26-45011f053f09",
+      "name": "Enviamos notificacion al equipo1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        -992
+      ],
+      "id": "cef11a69-7a7f-4799-9dee-3966e1256da6",
+      "name": "No Operation, do nothing12"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ce1ba3ab-f634-4ac6-87c6-7511d7706920",
+              "leftValue": "={{ $json.from.value[0].address }}",
+              "rightValue": "@aquilaerelevo.com",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -6176,
+        -64
+      ],
+      "id": "93c3d114-8478-4c74-9221-9ce9e0c61ad9",
+      "name": "¿Enviado por otra persona fuera de @aquilaerelevo?1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Limpiamos correo para verlo entero": {
+      "main": [
+        [
+          {
+            "node": "Analizamos correo recibido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizamos estado a 'respuesta'1": {
+      "main": [
+        [
+          {
+            "node": "Enviamos notificacion al equipo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plantilla 'No interesados'1": {
+      "main": [
+        [
+          {
+            "node": "Contestamos al correo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contestamos al correo1": {
+      "main": [
+        [
+          {
+            "node": "Actualizamos estado a 'Discarded'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Buscamos si ya existe reporte creado1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "15 mins de espera1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "15 mins de espera1": {
+      "main": [
+        [
+          {
+            "node": "Plantilla 'No interesados'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reporte de la empresa - Serper1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Creamos reporte1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpiamos info extraída1": {
+      "main": [
+        [
+          {
+            "node": "Generamos reporte2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Limpiamos texto ChatGPT2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creamos reporte1": {
+      "main": [
+        [
+          {
+            "node": "Analizamos web y extraemos HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpiamos texto ChatGPT2": {
+      "main": [
+        [
+          {
+            "node": "Añadimos info al reporte2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraemos info de la empresa1": {
+      "main": [
+        [
+          {
+            "node": "Actualizamos estado a 'respuesta'2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizamos web y extraemos HTML1": {
+      "main": [
+        [
+          {
+            "node": "Limpiamos info extraída1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generamos reporte2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Añadimos info al reporte2": {
+      "main": [
+        [
+          {
+            "node": "Retocamos documento2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retocamos el documento del reporte2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscamos carpeta 'Candidatas'3": {
+      "main": [
+        [
+          {
+            "node": "Buscamos carpetas existentes en 'Candidatas'2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retocamos documento2": {
+      "main": [
+        [
+          {
+            "node": "Retocamos el documento del reporte2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscamos carpetas existentes en 'Candidatas'2": {
+      "main": [
+        [
+          {
+            "node": "Renombramos carpeta para empresa nueva2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Renombramos carpeta para empresa nueva2": {
+      "main": [
+        [
+          {
+            "node": "Creamos carpeta para nueva empresa1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Buscamos carpeta 'Candidatas'3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creamos subcarpetas2": {
+      "main": [
+        [
+          {
+            "node": "Creamos 5 subcarpetas1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Actualizamos estado a 'respuesta'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizamos estado a 'respuesta'2": {
+      "main": [
+        [
+          {
+            "node": "Reporte de la empresa - Serper1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscamos si ya existe reporte creado1": {
+      "main": [
+        [
+          {
+            "node": "¿El reporte ya está creado?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿El reporte ya está creado?1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extraemos info de la empresa1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creamos carpeta para nueva empresa1": {
+      "main": [
+        [
+          {
+            "node": "Creamos subcarpetas2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger1": {
+      "main": [
+        [
+          {
+            "node": "¿Enviado por otra persona fuera de @aquilaerelevo?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizamos correo recibido": {
+      "main": [
+        [
+          {
+            "node": "Organizamos variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizamos variables": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Añadimos Template a '3 - Financials'1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Movemos reporte a carpeta general creada": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creamos 5 subcarpetas1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Añadimos Template a '3 - Financials'1": {
+      "main": [
+        [
+          {
+            "node": "Movemos reporte a carpeta general creada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviado por otra persona fuera de @aquilaerelevo?1": {
+      "main": [
+        [
+          {
+            "node": "Limpiamos correo para verlo entero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "5QdoxMXz2HWDSg0O"
+  },
+  "versionId": "92658f5e-426a-4834-b3cf-6bdb48fd3cc1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fdee5369c26d6859add6494f736bbaaa1d410971a99a9add0cb543feaaa53c31"
+  },
+  "id": "OfKvtVnfg8Qa8DzJ",
+  "tags": []
+}
